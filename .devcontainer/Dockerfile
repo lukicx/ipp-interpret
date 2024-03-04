@@ -6,7 +6,7 @@ ENV LANG cs_CZ.UTF-8
 ENV LC_ALL cs_CZ.UTF-8
 
 RUN apt-get update && apt-get install -y \
-    dos2unix python3 openjdk-17-jdk \
+    dos2unix python3 default-jre \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure pcntl --enable-pcntl \
