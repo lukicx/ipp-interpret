@@ -3,19 +3,22 @@
 namespace IPP\Student;
 
 class Frames {
-    private static $singleInstance = null;
-    private $GF = [];
+    private static ?Frames $singleInstance = null;
+    /**
+     * @var array<string, mixed>
+    */
+    private array $GF = [];
 
     private function __construct() {}
 
-    public static function getInstance() {
+    public static function getInstance() : Frames{
         if (self::$singleInstance === null) {
             self::$singleInstance = new Frames();
         }
         return self::$singleInstance;
     }
 
-    public function get($frame, $var):string {
+    public function get(string $frame, string $var) : mixed {
         echo ("Get frame: $frame\n");
         switch ($frame) {
             case 'GF':
@@ -28,7 +31,7 @@ class Frames {
         }
     }
 
-    public function set($frame, $var, $value):void {
+    public function set(string $frame, string $var, mixed $value):void {
         echo ("Set frame: $frame\n");
         switch ($frame) {
             case 'GF':
@@ -39,7 +42,7 @@ class Frames {
         }
     }
 
-    public function doesExist($frame, $var):bool {
+    public function doesExist(string $frame, string $var):bool {
         echo ("does exist frame: $frame\n");
         switch ($frame) {
             case 'GF':

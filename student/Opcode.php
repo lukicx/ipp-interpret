@@ -3,14 +3,14 @@
 namespace IPP\Student;
 
 abstract class  Opcode {
-    protected $args;
-    protected $frames;
+    protected mixed $args;
+    protected Frames $frames;
 
-    public function __construct($args, $frames) {
+    public function __construct(mixed $args, Frames $frames) {
         $this->args = $args;
         $this->frames = $frames;
     }
 
-    public function execute() {
+    public function execute() : void {
     }
 }

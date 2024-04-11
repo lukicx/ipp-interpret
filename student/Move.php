@@ -4,7 +4,7 @@ namespace IPP\Student;
 
 class Move extends Opcode{
 
-    public function execute() {
+    public function execute() : void {
   
 
         $destination = $this->args[0]->nodeValue;

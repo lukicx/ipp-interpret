@@ -5,7 +5,7 @@ use IPP\Core\StreamWriter;
 
 class Write extends Opcode {
 
-    public void function execute() {
+    public function execute(): void {
         $stdOutWriter = new StreamWriter(STDOUT);
         $valueToWrite = $this->args[0]->nodeValue;
         $type = $this->args[0]->getAttribute('type');

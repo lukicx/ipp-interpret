@@ -4,7 +4,7 @@ namespace IPP\Student;
 
 class Defvar extends Opcode {
 
-    public function execute() {
+    public function execute() : void {
 
         
         // Split the arg to frame and variable
