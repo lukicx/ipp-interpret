@@ -4,11 +4,11 @@ namespace IPP\Student;
 
 abstract class  Opcode {
     protected mixed $args;
-    protected Frames $frames;
+    protected MemoryManager $memoryManager;
 
-    public function __construct(mixed $args, Frames $frames) {
+    public function __construct(mixed $args, MemoryManager $memoryManager) {
         $this->args = $args;
-        $this->frames = $frames;
+        $this->memoryManager = $memoryManager;
     }
 
     public function execute() : void {

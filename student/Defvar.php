@@ -13,10 +13,10 @@ class Defvar extends Opcode {
         // TODO: Implement other frames
 
         //Check 
-        if ($this->frames->doesExist($frame, $variable)) {
+        if ($this->memoryManager->doesFrameExist($frame, $variable)) {
             throw new \RuntimeException("Variable '$variable' already exists in the 'GF' frame", 52);
         }
-        $this->frames->set($frame, $variable, null);
+        $this->memoryManager->setFrame($frame, $variable, null);
 
         echo "Successfully defined variable $variable in frame $frame\n";
     }

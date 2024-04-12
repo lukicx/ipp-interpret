@@ -3,12 +3,7 @@
 namespace IPP\Student;
 
 use IPP\Core\AbstractInterpreter;
-use IPP\Core\Exception\NotImplementedException;
 use IPP\Core\ReturnCode;
-use IPP\Student\Defvar;
-use IPP\Student\Write;
-use IPP\Student\Move;
-use IPP\Student\Frames;
 
 class Interpreter extends AbstractInterpreter
 {
@@ -21,16 +16,21 @@ class Interpreter extends AbstractInterpreter
         // $this->stdout->writeString("stdout");
         // $this->stderr->writeString("stderr");
         
-        $source = null;
-        $input = null;
         $dom = $this->source->getDOMDocument();
         // $val = $this->input->readString();
 
-        $instructions = $dom->getElementsByTagName('instruction');
-        echo "Number of instructions: ", $instructions->length, "\n";
+        $unorderedInstructions = $dom->getElementsByTagName('instruction');
+        $instructions = []; 
+        
+        foreach ($unorderedInstructions as $instruction) {
+            $order = (int) $instruction->getAttribute('order');
+            $instructions[$order] = $instruction;
+        }
+        ksort($instructions);
+
+
         foreach ($instructions as $instruction) {
             $i = 1;
-            $argCounter = 0;
             $allArgs = [];
             while (true) {
                 $args = $instruction->getElementsByTagName('arg' . $i);
@@ -40,33 +40,46 @@ class Interpreter extends AbstractInterpreter
                 foreach ($args as $arg) {
                     $allArgs[] = $arg;
                 }
-                $argCounter += $args->length;
                 $i++;
             }
             echo "Instruction: ", $instruction->getAttribute('opcode'), "\n";
-            echo "Number of args in instruction: ", $argCounter, "\n";
 
              // Sort the arguments by their node name
             usort($allArgs, function($first, $second) {
                 return strcmp($first->nodeName, $second->nodeName);
             });
 
-            $frames = Frames::getInstance();
+            $memoryManager = MemoryManager::getInstance();
 
             $opcode = null;
             switch ($instruction->getAttribute('opcode')) {
                 case 'MOVE':
                     echo "MOVE\n";
-                    $opcode = new Move($allArgs, $frames);
+                    $opcode = new Move($allArgs, $memoryManager);
                     break;
                 case 'DEFVAR':
                     echo "DEFVAR\n";
-                    
-                    $opcode = new Defvar($allArgs, $frames);
+                    $opcode = new Defvar($allArgs, $memoryManager);
                     break;
                 case 'WRITE':
                     echo "WRITE\n";
-                    $opcode = new Write($allArgs, $frames);
+                    $opcode = new Write($allArgs, $memoryManager);
+                    break;
+                case 'ADD':
+                    echo "ADD\n";
+                    $opcode = new Add($allArgs, $memoryManager);
+                    break;
+                case 'SUB':
+                    echo "SUB\n";
+                    $opcode = new Sub($allArgs, $memoryManager);
+                    break;
+                case 'MUL':
+                    echo "MUL\n";
+                    $opcode = new Mul($allArgs, $memoryManager);
+                    break;
+                case 'IDIV':
+                    echo "IDIV\n";
+                    $opcode = new Idiv($allArgs, $memoryManager);
                     break;
             }
         

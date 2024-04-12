@@ -13,14 +13,14 @@ class Move extends Opcode{
         // source is destinationVariable get value from the destinationFrame
         if ($source[2] === '@') {
             [$sourceFrame, $sourceVariable] = explode('@', $source);
-            $value = $this->frames->get($sourceFrame, $sourceVariable);
+            $value = $this->memoryManager->getFrame($sourceFrame, $sourceVariable);
         //  value is constant
         } else {
             $value = $source;
         }
 
-        $this->frames->set($destinationFrame, $destinationVariable, $value);
-        echo $this->frames->get($destinationFrame, $destinationVariable);
+        $this->memoryManager->setFrame($destinationFrame, $destinationVariable, $value);
+        echo $this->memoryManager->getFrame($destinationFrame, $destinationVariable);
 
 
         echo "Successfully moved data from $value to $destination\n";

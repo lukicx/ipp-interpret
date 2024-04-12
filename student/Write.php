@@ -8,11 +8,10 @@ class Write extends Opcode {
     public function execute(): void {
         $stdOutWriter = new StreamWriter(STDOUT);
         $valueToWrite = $this->args[0]->nodeValue;
-        $type = $this->args[0]->getAttribute('type');
 
         if ($this->args[0]->getAttribute('type') === 'var'){
             [$frame, $variable] = explode('@', $valueToWrite);
-            $value = $this->frames->get($frame, $variable);
+            $value = $this->memoryManager->getFrame($frame, $variable);
             if (is_int($value)) {
                 $stdOutWriter->writeInt($value);
             } else if (is_bool($value)) {
