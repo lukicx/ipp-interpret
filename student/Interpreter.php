@@ -81,6 +81,10 @@ class Interpreter extends AbstractInterpreter
                     echo "IDIV\n";
                     $opcode = new Idiv($allArgs, $memoryManager);
                     break;
+                case 'AND':
+                    echo "opAND\n";
+                    $opcode = new AndOp($allArgs, $memoryManager);
+                    break;
             }
         
             if ($opcode !== null) {

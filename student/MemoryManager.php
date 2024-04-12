@@ -25,17 +25,17 @@ class MemoryManager {
                 if (!isset($this->GF[$var])) {
                     throw new \InvalidArgumentException("Variable '$var' not defined");
                 }
-                return $this->GF[$var];
+                return $this->GF[$var] ;
             default:
                 throw new \InvalidArgumentException("Not implemented yet");
         }
     }
 
-    public function setFrame(string $frame, string $var, mixed $value):void {
+    public function setFrame(string $frame, string $var, mixed $value, string $type):void {
         echo ("Set frame: $frame\n");
         switch ($frame) {
             case 'GF':
-                $this->GF[$var] = $value;
+                $this->GF[$var] =  ['type' => $type, 'value' => $value];
                 break;
             default:
                 throw new \InvalidArgumentException("Not implemented yet");

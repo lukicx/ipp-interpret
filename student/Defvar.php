@@ -2,6 +2,8 @@
 
 namespace IPP\Student;
 
+use IPP\Core\ReturnCode;
+
 class Defvar extends Opcode {
 
     public function execute() : void {
@@ -14,9 +16,9 @@ class Defvar extends Opcode {
 
         //Check 
         if ($this->memoryManager->doesFrameExist($frame, $variable)) {
-            throw new \RuntimeException("Variable '$variable' already exists in the 'GF' frame", 52);
+            throw new \IPP\Student\Exceptions("Variable '$variable' exists in $frame", ReturnCode::SEMANTIC_ERROR);
         }
-        $this->memoryManager->setFrame($frame, $variable, null);
+        $this->memoryManager->setFrame($frame, $variable, null, '');
 
         echo "Successfully defined variable $variable in frame $frame\n";
     }
