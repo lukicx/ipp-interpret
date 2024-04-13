@@ -30,18 +30,18 @@ class Interpreter extends AbstractInterpreter
         ksort($instructions);
 
 
-        foreach ($instructions as $instruction) {
-            $i = 1;
+        foreach ($instructions as $instruction){
+            $j = 1;
             $allArgs = [];
             while (true) {
-                $args = $instruction->getElementsByTagName('arg' . $i);
+                $args = $instruction->getElementsByTagName('arg' . $j);
                 if ($args->length == 0) {
                     break;
                 }
                 foreach ($args as $arg) {
                     $allArgs[] = $arg;
                 }
-                $i++;
+                $j++;
             }
             echo "Instruction: ", $instruction->getAttribute('opcode'), "\n";
 
@@ -53,6 +53,8 @@ class Interpreter extends AbstractInterpreter
             $memoryManager = MemoryManager::getInstance();
 
             $opcode = null;
+            $order = intval($instruction->getAttribute('order'));
+
             switch ($instruction->getAttribute('opcode')) {
                 case 'MOVE':
                     echo "MOVE\n";
@@ -110,6 +112,10 @@ class Interpreter extends AbstractInterpreter
                     echo "INT2CHAR\n";
                     $opcode = new Int2Char($allArgs, $memoryManager);
                     break;
+                case 'STRI2INT':
+                    echo "STRI2INT\n";
+                    $opcode = new Stri2Int($allArgs, $memoryManager);
+                    break;
                 case 'READ':
                     echo "READ\n";
                     $opcode = new Read($allArgs,  $memoryManager, $this->input);
@@ -130,12 +136,28 @@ class Interpreter extends AbstractInterpreter
                     echo "SETCHAR\n";
                     $opcode = new Setchar($allArgs, $memoryManager);
                     break;
+                case 'TYPE':
+                    echo "TYPE\n";
+                    $opcode = new Type($allArgs, $memoryManager);
+                    break;
+                case 'LABEL':
+                    echo "LABEL\n";
+                    $opcode = new Label($allArgs, $memoryManager, $order);
+
+                    break;
+                case 'JUMP':
+                    echo "JUMP\n";
+                    $opcode = new Jump($allArgs, $memoryManager);
+                    $opcode->execute();
+                    $i = $opcode->getOrder() - 1;
+                    continue 2;
+                    
             }
         
-            if ($opcode !== null) {
+            if ($opcode !== null && $opcode !== Jump::class) {
                 $opcode->execute();
             }
         }
-            return ReturnCode::OK;
+       return ReturnCode::OK;
     }
 }

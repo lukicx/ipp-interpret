@@ -18,7 +18,7 @@ class Defvar extends Opcode {
         if ($this->memoryManager->doesFrameExist($frame, $variable)) {
             throw new \IPP\Student\Exceptions("Variable '$variable' exists in $frame", ReturnCode::SEMANTIC_ERROR);
         }
-        $this->memoryManager->setFrame($frame, $variable, '', '');
+        $this->memoryManager->setFrame($frame, $variable, null, null);
 
         echo "Successfully defined variable $variable in frame $frame\n";
     }
