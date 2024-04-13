@@ -11,7 +11,7 @@ class Move extends Opcode{
         [$destinationFrame, $destinationVariable] = explode('@', $destination);
         $source = $this->args[1]->nodeValue;
         // source is destinationVariable get value from the destinationFrame
-        if ($source[2] === '@') {
+        if (strpos($source, '@') !== false) {
             [$sourceFrame, $sourceVariable] = explode('@', $source);
             $value = $this->memoryManager->getFrame($sourceFrame, $sourceVariable);
         //  value is constant
@@ -19,8 +19,8 @@ class Move extends Opcode{
             $value = $source;
         }
 
-        $this->memoryManager->setFrame($destinationFrame, $destinationVariable, $value);
-        echo $this->memoryManager->getFrame($destinationFrame, $destinationVariable);
+        $this->memoryManager->setFrame($destinationFrame, $destinationVariable, $value, $this->args[1]->getAttribute('type'));
+        print_r($this->memoryManager->getFrame($destinationFrame, $destinationVariable));
 
 
         echo "Successfully moved data from $value to $destination\n";

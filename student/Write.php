@@ -52,6 +52,6 @@ class Write extends Opcode {
                     break;
             }
         }
-        echo "\nWrote value: " . $value . "\n";
+        // echo "\nWrote value: " . $value . "\n";
     }
 }

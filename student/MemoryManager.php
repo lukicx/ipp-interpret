@@ -20,6 +20,7 @@ class MemoryManager {
 
     public function getFrame(string $frame, string $var) : mixed {
         echo ("Get frame: $frame\n");
+        echo ("Frame state: " . print_r($this->GF, true) . "\n");
         switch ($frame) {
             case 'GF':
                 if (!isset($this->GF[$var])) {
@@ -31,8 +32,7 @@ class MemoryManager {
         }
     }
 
-    public function setFrame(string $frame, string $var, mixed $value, string $type):void {
-        echo ("Set frame: $frame\n");
+    public function setFrame(string $frame, string $var, string $value, string $type):void {
         switch ($frame) {
             case 'GF':
                 $this->GF[$var] =  ['type' => $type, 'value' => $value];

@@ -47,7 +47,8 @@ abstract class Arithmetic extends Opcode {
     {
         [$firstOperand, $secondOperand] = $this->getOperands($this->args[1], $this->args[2]);
         $variable = $this->args[0]->nodeValue;
-        $result = $this->operation($firstOperand, $secondOperand);
+        $result = $this->operation((int)$firstOperand,(int)$secondOperand);
+        $result = var_export($result, true);
         [$destFrame, $destVariable] = explode('@', $variable);
         $this->memoryManager->setFrame($destFrame, $destVariable, $result, "int");
     }

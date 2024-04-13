@@ -85,10 +85,31 @@ class Interpreter extends AbstractInterpreter
                     echo "opAND\n";
                     $opcode = new AndOp($allArgs, $memoryManager);
                     break;
+                case 'OR':
+                    echo "Executing OR instruction\n";
+                    $opcode = new OrOp($allArgs, $memoryManager);
+                    break;
+                case 'NOT':
+                    echo "NotOp\n";
+                    $opcode = new NotOp($allArgs, $memoryManager);
+                    break;
+                case 'LT':
+                    echo "LT\n";
+                    $opcode = new Lt($allArgs, $memoryManager);
+                    break;
+                case 'GT':
+                    echo "GT\n";
+                    $opcode = new Gt($allArgs, $memoryManager);
+                    break;
+                case 'EQ':
+                    echo "EQ\n";
+                    $opcode = new Eq($allArgs, $memoryManager);
+                    break;
             }
         
             if ($opcode !== null) {
                 $opcode->execute();
+                print_r($memoryManager->getFrame('GF', 'a');
             }
         }
             return ReturnCode::OK;
