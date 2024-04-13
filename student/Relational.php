@@ -13,8 +13,8 @@ abstract class Relational extends Opcode {
      * @return array<string>
      */
     protected function getOperands(DOMElement $firstOperandElement, DOMElement $secondOperandElement) : array  {
-        [$firstOperand, $firstType] = $this->getValueAndType($firstOperandElement);
-        [$secondOperand, $secondType] = $this->getValueAndType($secondOperandElement);
+        [$firstOperand, $firstType]= $this->getValueAndType->execute($firstOperandElement, $this->memoryManager);
+        [$secondOperand, $secondType]= $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
 
         if ($firstType === 'nil' || $secondType === 'nil'){
             if (get_class($this) !== 'Eq') {
@@ -31,44 +31,16 @@ abstract class Relational extends Opcode {
             throw new \Exception("Operands are not of the same type", ReturnCode::OPERAND_TYPE_ERROR);
         }
 
+        if ($firstType !== 'bool') {
+            settype($firstOperand, $firstType);
+        }
+        if ($secondType !== 'bool') {
+            settype($secondOperand, $secondType);
+        }
 
         return [$firstOperand, $secondOperand];
     }
     
-    /**
-     * getValueAndType
-     *
-     * @param  DOMElement $operandNode
-     * @return array<string>
-     */
-    private function getValueAndType(DOMElement $operandNode) : array  {
-          if ($operandNode->getAttribute('type') === 'var') {
-            [$frame, $variable] = explode('@', $operandNode->nodeValue);
-            $storedFrameData = $this->memoryManager->getFrame($frame, $variable);
-            $value = $storedFrameData['value'];
-            $type = $storedFrameData['type'];
-        } else {
-            $value = $operandNode->nodeValue;
-            $type = $operandNode->getAttribute('type');
-        }
-
-        switch ($type) {
-            // case 'bool':
-            //     $value = ($value === 'true' || $value === '1') ? true : false;
-            //     break;
-            case 'int':
-                $value = intval($value);
-                break;
-            case 'string':
-                $value = strval($value);
-                break;
-        }
-        
-
-      
-
-        return [$value, $type];
-    }
 
     public function execute(): void
     {

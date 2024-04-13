@@ -3,6 +3,7 @@
 namespace IPP\Student;
 
 use IPP\Core\AbstractInterpreter;
+use IPP\Core\FileInputReader;
 use IPP\Core\ReturnCode;
 
 class Interpreter extends AbstractInterpreter
@@ -105,11 +106,31 @@ class Interpreter extends AbstractInterpreter
                     echo "EQ\n";
                     $opcode = new Eq($allArgs, $memoryManager);
                     break;
+                case 'INT2CHAR':
+                    echo "INT2CHAR\n";
+                    $opcode = new Int2Char($allArgs, $memoryManager);
+                    break;
+                case 'READ':
+                    echo "READ\n";
+                    $opcode = new Read($allArgs,  $memoryManager, $this->input);
+                    break;
+                case 'CONCAT':
+                    echo "CONCAT\n";
+                    $opcode = new Concat($allArgs, $memoryManager);
+                    break;
+                // case 'STRLEN':
+                //     echo "STRLEN\n";
+                //     $opcode = new Strlen($allArgs, $memoryManager);
+                //     break;
+                // case 'GETCHAR':
+                //     echo "GETCHAR\n";
+                //     $opcode = new Getchar($allArgs, $memoryManager);
+                //     break;
+                // case 'SETCHAR':
             }
         
             if ($opcode !== null) {
                 $opcode->execute();
-                print_r($memoryManager->getFrame('GF', 'a');
             }
         }
             return ReturnCode::OK;

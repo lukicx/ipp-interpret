@@ -15,10 +15,10 @@ abstract class Boolean extends Opcode {
      * @return array<bool>
      */
     protected function getOperands(DOMElement $firstOperandElement, DOMElement $secondOperandElement = null) : array  {
-        [$firstOperand, $firstType] = $this->getValueAndType($firstOperandElement);
+        [$firstOperand, $firstType]= $this->getValueAndType->execute($firstOperandElement, $this->memoryManager);
 
         if ($secondOperandElement) {
-            [$secondOperand, $secondType] = $this->getValueAndType($secondOperandElement);
+            [$secondOperand, $secondType]= $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
             if ($firstType !== 'bool' || $secondType !== 'bool'){
                 throw new \Exception("At least one of the operands is not bool", ReturnCode::OPERAND_TYPE_ERROR);
             }
@@ -29,43 +29,11 @@ abstract class Boolean extends Opcode {
         if ($firstType !== 'bool'){
             throw new \Exception("The operand is not bool", ReturnCode::OPERAND_TYPE_ERROR);
         }
+
+        settype($firstOperand, $firstType);
         return [$firstOperand];
     }
     
-    /**
-     * getValueAndType
-     *
-     * @param  DOMElement $operandNode
-     * @return array<mixed>
-     */
-    private function getValueAndType(DOMElement $operandNode) : array  {
-        if ($operandNode->getAttribute('type') === 'var') {
-            [$frame, $variable] = explode('@', $operandNode->nodeValue);
-            $storedFrameData = $this->memoryManager->getFrame($frame, $variable);
-            $value = $storedFrameData['value'];
-            $type = $storedFrameData['type'];
-        } else {
-            $value = $operandNode->nodeValue;
-            $type = $operandNode->getAttribute('type');
-        }
-
-        switch ($type) {
-            case 'bool':
-                $value = ($value === 'true' || $value === '1') ? true : false;
-                break;
-            case 'int':
-                $value = intval($value);
-                break;
-            case 'string':
-                $value = strval($value);
-                break;
-        }
-        
-
-        return [$value, $type];
-    }
-
-
     public function execute(): void
     {
         $secondOperand = null;

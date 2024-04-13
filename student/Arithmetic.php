@@ -16,8 +16,12 @@ abstract class Arithmetic extends Opcode {
     protected function getOperands(DOMElement $firstOperandElement, DOMElement $secondOperandElement) : array  {
 
         
-        [$firstOperand, $firstType]= $this->getValueAndType($firstOperandElement);
-        [$secondOperand, $secondType] = $this->getValueAndType($secondOperandElement);
+        [$firstOperand, $firstType]= $this->getValueAndType->execute($firstOperandElement, $this->memoryManager);
+        [$secondOperand, $secondType] = $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
+
+        echo "First operand " . $firstOperand . " Second operand " . $secondOperand . " Type: ";
+        echo $firstType . $secondType;
+
 
 
         if ($firstType !== 'int' || $secondType !== 'int'){
@@ -27,21 +31,6 @@ abstract class Arithmetic extends Opcode {
         return [$firstOperand, $secondOperand];
     }
 
-         
-   
-    private function getValueAndType(DOMElement $operandNode) : mixed  {
-       
-
-        if ($operandNode->getAttribute('type') === 'var') {
-
-            [$frame, $variable] = explode('@', $operandNode->nodeValue);
-            $storedFrameData = $this->memoryManager->getFrame($frame, $variable);
-            return [$storedFrameData['value'], $storedFrameData['type']];
-            
-        } else {
-            return [$operandNode->nodeValue, $operandNode->getAttribute('type')];
-        }
-    }
 
     public function execute(): void
     {

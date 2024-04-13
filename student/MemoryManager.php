@@ -20,7 +20,7 @@ class MemoryManager {
 
     public function getFrame(string $frame, string $var) : mixed {
         echo ("Get frame: $frame\n");
-        echo ("Frame state: " . print_r($this->GF, true) . "\n");
+        print_r($this->GF);
         switch ($frame) {
             case 'GF':
                 if (!isset($this->GF[$var])) {

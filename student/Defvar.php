@@ -23,4 +23,3 @@ class Defvar extends Opcode {
         echo "Successfully defined variable $variable in frame $frame\n";
     }
 }
-?>
