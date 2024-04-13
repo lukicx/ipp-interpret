@@ -27,9 +27,9 @@ class MemoryManager {
                     throw new \InvalidArgumentException("Variable '$var' not defined");
                 }
                 return $this->GF[$var] ;
-            default:
+                default:
                 throw new \InvalidArgumentException("Not implemented yet");
-        }
+            }
     }
 
     public function setFrame(string $frame, string $var, string $value, string $type):void {

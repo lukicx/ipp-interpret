@@ -118,15 +118,18 @@ class Interpreter extends AbstractInterpreter
                     echo "CONCAT\n";
                     $opcode = new Concat($allArgs, $memoryManager);
                     break;
-                // case 'STRLEN':
-                //     echo "STRLEN\n";
-                //     $opcode = new Strlen($allArgs, $memoryManager);
-                //     break;
-                // case 'GETCHAR':
-                //     echo "GETCHAR\n";
-                //     $opcode = new Getchar($allArgs, $memoryManager);
-                //     break;
-                // case 'SETCHAR':
+                case 'STRLEN':
+                    echo "STRLEN\n";
+                    $opcode = new Strlen($allArgs, $memoryManager);
+                    break;
+                case 'GETCHAR':
+                    echo "GETCHAR\n";
+                    $opcode = new Getchar($allArgs, $memoryManager);
+                    break;
+                case 'SETCHAR':
+                    echo "SETCHAR\n";
+                    $opcode = new Setchar($allArgs, $memoryManager);
+                    break;
             }
         
             if ($opcode !== null) {
