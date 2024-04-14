@@ -49,6 +49,29 @@ class MemoryManager {
         $this->TF = [];
     }
 
+    public function pushFrame(): void {
+        if ($this->TF === null) {
+            $this->stderrWriter->writeString("Frame not defined\n");
+            exit(ReturnCode::FRAME_ACCESS_ERROR );
+        }
+        array_push($this->stack, $this->TF);
+        $this->LF = $this->TF;
+        $this->TF = null;
+    }
+
+    public function popFrame(): void {
+        if ($this->LF === null) {
+            $this->stderrWriter->writeString("Frame not defined\n");
+            exit(ReturnCode::FRAME_ACCESS_ERROR);
+        }
+        $this->TF = array_pop($this->stack);
+        if (empty($this->stack)) {
+            $this->LF = null;
+        } else {
+            $this->LF = end($this->stack);
+        }
+    }
+
     public function getVariableInFrame(string $frame, string $var) : mixed {
         switch ($frame) {
             case 'GF':

@@ -140,6 +140,12 @@ class Interpreter extends AbstractInterpreter
                 case 'CREATEFRAME':
                     $memoryManager->createFrame();
                     break;
+                case 'PUSHFRAME':
+                    $opcode = new PushFrame($memoryManager);
+                    break;
+                case 'POPFRAME':
+                    $opcode = new PopFrame($memoryManager);
+                    break;
             }
         
             if ($opcode !== null && $opcode !== Jump::class) {
