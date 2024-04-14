@@ -2,14 +2,15 @@
 
 namespace IPP\Student;
 
+use DOMElement;
 use IPP\Core\ReturnCode;
-use IPP\Student\Exceptions;
 use IPP\Core\StreamWriter;
 
 class MemoryManager {
     protected StreamWriter $stderrWriter;
     protected int $numberOfInstructions;
     protected int $positionInCode;
+    protected GetValueAndType $getValueAndType;
 
     private static ?MemoryManager $singleInstance = null;
     /**
@@ -28,6 +29,10 @@ class MemoryManager {
      * @var array<array<string,array{type:string,value:mixed}>>|null
      */
     private $stack = [];
+    /**
+     * @var array{type:string,value:mixed}[]
+     */
+    private $dataStack = [];
 
     /**
      * @var array<string,int>
@@ -36,6 +41,7 @@ class MemoryManager {
 
     private function __construct() {
         $this->stderrWriter = new StreamWriter(STDERR);
+        $this->getValueAndType = new GetValueAndType();
     }
 
     public static function getInstance() : MemoryManager{
@@ -56,7 +62,7 @@ class MemoryManager {
         }
         array_push($this->stack, $this->TF);
         $this->LF = $this->TF;
-        $this->TF = null;
+        $this->TF = null; 
     }
 
     public function popFrame(): void {
@@ -64,12 +70,32 @@ class MemoryManager {
             $this->stderrWriter->writeString("Frame not defined\n");
             exit(ReturnCode::FRAME_ACCESS_ERROR);
         }
-        $this->TF = array_pop($this->stack);
+        $this->TF = $this->LF;
+        $this->LF = array_pop($this->stack);
         if (empty($this->stack)) {
             $this->LF = null;
-        } else {
-            $this->LF = end($this->stack);
         }
+    }
+    /**
+     * @param array<DOMElement>$args
+     */
+    public function pushs(array $args): void {
+        [$value, $type] = $this->getValueAndType->execute($args[0], $this);
+       
+        array_push($this->dataStack, ['type' => $type, 'value' => $value]);
+    }
+
+    /**
+     * @param array<DOMElement>$args
+     */
+    public function pops(array $args): void {
+        if (empty($this->dataStack)) {
+            $this->stderrWriter->writeString("Empty data stack\n");
+            exit(ReturnCode::VALUE_ERROR);
+        }
+        [$frame, $varName] = explode('@', $args[0]->nodeValue);
+        $value = array_pop($this->dataStack);
+        $this->setVariableInFrame($frame, $varName, $value['value'], $value['type']);
     }
 
     public function getVariableInFrame(string $frame, string $var) : mixed {
@@ -86,14 +112,16 @@ class MemoryManager {
                     exit(ReturnCode::VARIABLE_ACCESS_ERROR);
                 }
                 return $this->LF[$var];
-            case 'TF':
-                if (!isset($this->TF[$var])) {
+                case 'TF':
+                    if (!isset($this->TF[$var])) {
+                    echo "hello";
                     $this->stderrWriter->writeString("Variable '$var' not defined\n");
                     exit(ReturnCode::VARIABLE_ACCESS_ERROR);
                 }
                 return $this->TF[$var];
             default:
-            throw new \InvalidArgumentException("Not implemented yet");
+                $this->stderrWriter->writeString("Wrong frame\n");
+                exit(ReturnCode::FRAME_ACCESS_ERROR);
             }
     }
 
@@ -109,7 +137,8 @@ class MemoryManager {
                 $this->TF[$var] = ['type' => $type, 'value' => $value];
                 break;
             default:
-                throw new \InvalidArgumentException("Not implemented yet");
+                $this->stderrWriter->writeString("Wrong frame\n");
+                exit(ReturnCode::FRAME_ACCESS_ERROR);
         }
     }                
     
@@ -124,7 +153,8 @@ class MemoryManager {
             case 'TF':
                 return isset($this->TF[$var]);
             default:
-            throw new Exceptions("Not implemented yet", ReturnCode::INTERNAL_ERROR);
+                $this->stderrWriter->writeString("Wrong frame\n");
+                exit(ReturnCode::FRAME_ACCESS_ERROR);
         }
     }
 
@@ -147,11 +177,15 @@ class MemoryManager {
         }
         return $this->labels[$label];
     }
-
     public function getFramesStatus() : string {
+        $frames = ['GF' => $this->GF, 'LF' => $this->LF, 'TF' => $this->TF];
         $framesStatus = "";
-        foreach ($this->GF as $variableName => $variable) {
-            $framesStatus .= "Variable name: $variableName, Type: {$variable['type']}, Value: {$variable['value']}\n";
+        foreach ($frames as $frameName => $frame) {
+            if ($frame !== null) { 
+                foreach ($frame as $variableName => $variable) {
+                    $framesStatus .= "Frame: $frameName \n Variable name: $variableName \n Type: {$variable['type']} \n Value: {$variable['value']}\n";
+                }
+            }
         }
         return $framesStatus;
     }

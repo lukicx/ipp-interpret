@@ -5,7 +5,6 @@ namespace IPP\Student;
 
 use IPP\Student\Arithmetic;
 use IPP\Core\ReturnCode;
-use IPP\Student\Exceptions;
 
 
 class Idiv extends Arithmetic {

@@ -20,11 +20,20 @@ class Interpreter extends AbstractInterpreter
         $dom = $this->source->getDOMDocument();
         // $val = $this->input->readString();
 
+        if ($dom->documentElement->getAttribute('language') !== 'IPPcode24') {
+            $this->stderr->writeString("Wrong document language");
+            exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
+        }
+
         $unorderedInstructions = $dom->getElementsByTagName('instruction');
         $instructions = []; 
         
         foreach ($unorderedInstructions as $instruction) {
             $order = (int) $instruction->getAttribute('order');
+            if ($order < 0){
+                $this->stderr->writeString("Negative order");
+                exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
+            }
             $instructions[$order] = $instruction;
         }
         ksort($instructions);
@@ -50,7 +59,7 @@ class Interpreter extends AbstractInterpreter
                 return strcmp($first->nodeName, $second->nodeName);
             });
 
-            $order = intval($instruction->getAttribute('order'));
+
             $memoryManager = MemoryManager::getInstance();
             $memoryManager->setPositionInCode($order);
             $memoryManager->setNumberOfInstructions($numberOfInstructions);
@@ -146,6 +155,15 @@ class Interpreter extends AbstractInterpreter
                 case 'POPFRAME':
                     $opcode = new PopFrame($memoryManager);
                     break;
+                case 'POPS':
+                    $memoryManager->pops($allArgs);
+                    break;
+                case 'PUSHS':
+                    $memoryManager->pushs($allArgs);
+                    break;
+                default:
+                    $this->stderr->writeString("Wrong XML structure");
+                    exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
             }
         
             if ($opcode !== null && $opcode !== Jump::class) {

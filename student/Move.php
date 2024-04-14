@@ -2,6 +2,8 @@
 
 namespace IPP\Student;
 
+use IPP\Core\ReturnCode;
+
 class Move extends Opcode{
 
     public function execute() : void {
@@ -17,6 +19,11 @@ class Move extends Opcode{
         //  value is constant
         } else {
             $value = $source;
+        }
+
+        if (!$this->memoryManager->doesVariableExistInFrame($destinationFrame, $destinationVariable)) {
+            $this->stderrWriter->writeString("Variable does not exist in the frame\n");
+            exit(ReturnCode::VARIABLE_ACCESS_ERROR);
         }
 
         $this->memoryManager->setVariableInFrame($destinationFrame, $destinationVariable, $value, $this->args[1]->getAttribute('type'));

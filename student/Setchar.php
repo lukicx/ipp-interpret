@@ -14,13 +14,14 @@ class Setchar extends Opcode {
 
         if ($firstType !== 'int' || $secondType !== 'string') {
             $this->stderrWriter->writeString("Operands should be int and string\n");
-            exit(ReturnCode::OPERAND_TYPE_ERROR);;
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
 
         [$stringToChange, $stringType] = $this->getValueAndType->execute($this->args[0], $this->memoryManager);
 
          if ($firstValue < 0 || $firstValue >= strlen($stringToChange) || strlen($secondValue) == 0) {
-            throw new \Exception("Index out of range", ReturnCode::STRING_OPERATION_ERROR);
+            $this->stderrWriter->writeString("Wrong index\n");
+            exit(ReturnCode::STRING_OPERATION_ERROR);
         }
 
         $stringToChange = substr_replace($stringToChange, $secondValue[0], $firstValue, 1);

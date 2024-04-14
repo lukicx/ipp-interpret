@@ -17,7 +17,7 @@ abstract class Relational extends Opcode {
         [$secondOperand, $secondType]= $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
 
         if ($firstType === 'nil' || $secondType === 'nil'){
-            if (get_class($this) !== 'Eq') {
+            if (!($this instanceof Eq)) {
                 $this->stderrWriter->writeString("Operand is nil and the operation is not Eq\n");
                 exit(ReturnCode::OPERAND_TYPE_ERROR);;
             }
@@ -34,10 +34,8 @@ abstract class Relational extends Opcode {
             exit(ReturnCode::OPERAND_TYPE_ERROR);;
         }
 
-        if ($firstType !== 'bool') {
+        if ($firstType === 'int' || $firstType === 'string'){
             settype($firstOperand, $firstType);
-        }
-        if ($secondType !== 'bool') {
             settype($secondOperand, $secondType);
         }
 

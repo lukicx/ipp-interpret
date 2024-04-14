@@ -10,7 +10,7 @@ class BreakOp extends Opcode {
 
         $this->stderrWriter->writeString("Position in code: $positionInCode\n");
         $this->stderrWriter->writeString("Frames: " . print_r($frames, true) . "\n");
-        $this->stderrWriter->writeString("Number of instructions: $numberOfInstructions\n");
+        $this->stderrWriter->writeString("Number of instructions: $numberOfInstructions \n");
     }
 }
 ?>

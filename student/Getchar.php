@@ -16,7 +16,8 @@ class Getchar extends Opcode {
         }
 
         if ($secondValue < 0 || $secondValue >= strlen($firstValue)) {
-            throw new \Exception("Index out of range", ReturnCode::STRING_OPERATION_ERROR);
+            $this->stderrWriter->writeString("Out of range\n");
+            exit(ReturnCode::STRING_OPERATION_ERROR);
         }
         $charToStore = $firstValue[$secondValue];
         [$frame, $variable] = explode('@', $this->args[0]->nodeValue);

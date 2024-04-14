@@ -23,7 +23,7 @@ class Int2Char extends Opcode {
         $this->stderrWriter->writeString("Operands should be string and int\n");
         exit(ReturnCode::STRING_OPERATION_ERROR);
     }
-
+    
     [$frame, $variable] = explode('@', $this->args[0]->nodeValue);
     $this->memoryManager->setVariableInFrame($frame, $variable, $convertedIntegerToChar, 'string');
     }

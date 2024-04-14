@@ -23,6 +23,8 @@ abstract class Boolean extends Opcode {
                 $this->stderrWriter->writeString("Arguments should be type of bool\n");
                 exit(ReturnCode::OPERAND_TYPE_ERROR);
             }
+            $firstOperand = filter_var($firstOperand, FILTER_VALIDATE_BOOLEAN);
+            $secondOperand = filter_var($secondOperand, FILTER_VALIDATE_BOOLEAN);
             return [$firstOperand, $secondOperand];
         }
 
@@ -30,8 +32,7 @@ abstract class Boolean extends Opcode {
             $this->stderrWriter->writeString("Argument should be type of bool\n");
             exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
-
-        settype($firstOperand, $firstType);
+        $firstOperand = filter_var($firstOperand, FILTER_VALIDATE_BOOLEAN);
         return [$firstOperand];
     }
     
