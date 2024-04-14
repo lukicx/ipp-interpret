@@ -11,7 +11,8 @@ class Getchar extends Opcode {
         [$secondValue, $secondType] = $this->getValueAndType->execute($this->args[2], $this->memoryManager);
 
         if ($firstType !== 'string' || $secondType !== 'int') {
-            throw new \Exception("Not correct operands need to be string and int", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Operands should be string and int\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
 
         if ($secondValue < 0 || $secondValue >= strlen($firstValue)) {
@@ -20,6 +21,6 @@ class Getchar extends Opcode {
         $charToStore = $firstValue[$secondValue];
         [$frame, $variable] = explode('@', $this->args[0]->nodeValue);
 
-        $this->memoryManager->setFrame($frame, $variable, $charToStore, 'string');
+        $this->memoryManager->setVariableInFrame($frame, $variable, $charToStore, 'string');
     }
 }

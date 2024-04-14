@@ -10,7 +10,8 @@ class Int2Char extends Opcode {
     [$value, $type] = $this->getValueAndType->execute($this->args[1], $this->memoryManager);
     
     if ($type !== 'int') {
-        throw new \Exception("Invalid type", ReturnCode::OPERAND_TYPE_ERROR);
+        $this->stderrWriter->writeString("Operand should be int\n");
+        exit(ReturnCode::OPERAND_TYPE_ERROR);
     }
 
     /**
@@ -19,10 +20,11 @@ class Int2Char extends Opcode {
     $convertedIntegerToChar = mb_chr((int)$value, 'UTF-8');
 
     if ($convertedIntegerToChar === false && is_bool($convertedIntegerToChar)) {
-        throw new \Exception("Invalid Unicode value", ReturnCode::STRING_OPERATION_ERROR);
+        $this->stderrWriter->writeString("Operands should be string and int\n");
+        exit(ReturnCode::STRING_OPERATION_ERROR);
     }
 
     [$frame, $variable] = explode('@', $this->args[0]->nodeValue);
-    $this->memoryManager->setFrame($frame, $variable, $convertedIntegerToChar, 'string');
+    $this->memoryManager->setVariableInFrame($frame, $variable, $convertedIntegerToChar, 'string');
     }
 }

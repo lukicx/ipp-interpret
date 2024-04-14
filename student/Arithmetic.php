@@ -19,13 +19,12 @@ abstract class Arithmetic extends Opcode {
         [$firstOperand, $firstType]= $this->getValueAndType->execute($firstOperandElement, $this->memoryManager);
         [$secondOperand, $secondType] = $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
 
-        echo "First operand " . $firstOperand . " Second operand " . $secondOperand . " Type: ";
-        echo $firstType . $secondType;
 
 
 
         if ($firstType !== 'int' || $secondType !== 'int'){
-            throw new \Exception("At least one of the operands is not int", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Argument should be type of int\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
 
         return [$firstOperand, $secondOperand];
@@ -39,7 +38,7 @@ abstract class Arithmetic extends Opcode {
         $result = $this->operation((int)$firstOperand,(int)$secondOperand);
         $result = var_export($result, true);
         [$destFrame, $destVariable] = explode('@', $variable);
-        $this->memoryManager->setFrame($destFrame, $destVariable, $result, "int");
+        $this->memoryManager->setVariableInFrame($destFrame, $destVariable, $result, "int");
     }
 
     abstract protected function operation(int $firstOperand, int $secondOperand): int;

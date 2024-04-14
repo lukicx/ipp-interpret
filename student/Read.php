@@ -31,16 +31,16 @@ class Read extends Opcode {
                 $value = $this->input->readString();
                 break;
             default:
-                throw new \Exception("Invalid type for Read", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Invalid value type for read instruction\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
 
-        echo "Value read: " . $value . "\n";
 
         if ($value === null) {
             return;
         }
 
-        $this->memoryManager->setFrame($frame, $variable, $value, $typeToRead);
+        $this->memoryManager->setVariableInFrame($frame, $variable, $value, $typeToRead);
     }
 }
 ?>

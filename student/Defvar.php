@@ -9,17 +9,15 @@ class Defvar extends Opcode {
     public function execute() : void {
 
         
-        // Split the arg to frame and variable
         list($frame, $variable) = explode('@', $this->args[0]->nodeValue);
 
         // TODO: Implement other frames
 
-        //Check 
-        if ($this->memoryManager->doesFrameExist($frame, $variable)) {
-            throw new \IPP\Student\Exceptions("Variable '$variable' exists in $frame", ReturnCode::SEMANTIC_ERROR);
+        if ($this->memoryManager->doesVariableExistInFrame($frame, $variable)) {
+            $this->stderrWriter->writeString("Variable already exists in the frame\n");
+            exit(ReturnCode::SEMANTIC_ERROR);
         }
-        $this->memoryManager->setFrame($frame, $variable, null, null);
+        $this->memoryManager->setVariableInFrame($frame, $variable, null, null);
 
-        echo "Successfully defined variable $variable in frame $frame\n";
     }
 }

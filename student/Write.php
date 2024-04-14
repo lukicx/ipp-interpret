@@ -10,15 +10,14 @@ class Write extends Opcode {
     public function execute(): void {
         $stdOutWriter = new StreamWriter(STDOUT);
         $valueToWrite = $this->args[0]->nodeValue;
-        echo "Value to write: " . $valueToWrite . "\n";
 
         if ($this->args[0]->getAttribute('type') === 'var'){
             [$frame, $variable] = explode('@', $valueToWrite);
-            $value = $this->memoryManager->getFrame($frame, $variable);
-            echo "Value to write: " . $value['value'] . " type: " . $value['type'] ."\n";
+            $value = $this->memoryManager->getVariableInFrame($frame, $variable);
 
             if (!isset($value['type']) || !isset($value['value'])) {
-                throw new \Exception("Value or type is not set", ReturnCode::INTERNAL_ERROR);
+                $this->stderrWriter->writeString("Type or value is not set\n");
+                exit(ReturnCode::VALUE_ERROR);
             }
 
             $type = $value['type'];
@@ -30,8 +29,12 @@ class Write extends Opcode {
                 $stdOutWriter->writeBool((bool)$value);
             } else if ($type === 'nil') {
                 $stdOutWriter->writeString('');
-            } else {
+            } else if ($type === 'string'){
                 $stdOutWriter->writeString($value);
+            }
+            else {
+                $this->stderrWriter->writeString("Unknown type\n");
+                exit(ReturnCode::SEMANTIC_ERROR);
             }
         }
         else {
@@ -47,9 +50,12 @@ class Write extends Opcode {
                 case 'nil':
                     $stdOutWriter->writeString('');
                     break;
-                default:
+                case 'string':
                     $stdOutWriter->writeString($constantValue);
                     break;
+                default:
+                    $this->stderrWriter->writeString("Unknown type\n");
+                    exit(ReturnCode::SEMANTIC_ERROR);
             }
         }
         // echo "\nWrote value: " . $value . "\n";

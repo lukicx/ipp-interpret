@@ -20,14 +20,15 @@ abstract class Boolean extends Opcode {
         if ($secondOperandElement) {
             [$secondOperand, $secondType]= $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
             if ($firstType !== 'bool' || $secondType !== 'bool'){
-                throw new \Exception("At least one of the operands is not bool", ReturnCode::OPERAND_TYPE_ERROR);
+                $this->stderrWriter->writeString("Arguments should be type of bool\n");
+                exit(ReturnCode::OPERAND_TYPE_ERROR);
             }
             return [$firstOperand, $secondOperand];
         }
-        echo $firstOperand . $secondOperandElement;
 
         if ($firstType !== 'bool'){
-            throw new \Exception("The operand is not bool", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Argument should be type of bool\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
 
         settype($firstOperand, $firstType);
@@ -47,10 +48,7 @@ abstract class Boolean extends Opcode {
 
         $variable = $this->args[0]->nodeValue;
         [$destFrame, $destVariable] = explode('@', $variable);
-        echo "Frame state before boolean instruction: ";
-        $this->memoryManager->setFrame($destFrame, $destVariable, $result, "bool");
-        echo "Frame state after boolean instruction: ";
-        print_r($this->memoryManager->getFrame($destFrame, $destVariable));
+        $this->memoryManager->setVariableInFrame($destFrame, $destVariable, $result, "bool");
     }
 
 

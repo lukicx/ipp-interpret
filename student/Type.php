@@ -13,6 +13,6 @@ public function execute(): void {
     }
 
     [$frame, $variable] = explode('@', $setVariable);
-    $this->memoryManager->setFrame($frame, $variable, $type, $type);
+    $this->memoryManager->setVariableInFrame($frame, $variable, $type, $type);
 }
 }

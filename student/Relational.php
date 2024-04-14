@@ -18,17 +18,20 @@ abstract class Relational extends Opcode {
 
         if ($firstType === 'nil' || $secondType === 'nil'){
             if (get_class($this) !== 'Eq') {
-                throw new \Exception("Nil can be used only with EQ", ReturnCode::OPERAND_TYPE_ERROR);
+                $this->stderrWriter->writeString("Operand is nil and the operation is not Eq\n");
+                exit(ReturnCode::OPERAND_TYPE_ERROR);;
             }
             return [$firstOperand, $secondOperand];
         }
 
         if ($firstType !== 'int' && $firstType !== 'bool' && $firstType !== 'string'){
-            throw new \Exception("Not valid type of operands", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Invalid type for relational operation\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);;
         }
 
         if ($firstType !== $secondType){
-            throw new \Exception("Operands are not of the same type", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Operands are not of same value\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);;
         }
 
         if ($firstType !== 'bool') {
@@ -49,7 +52,7 @@ abstract class Relational extends Opcode {
         $result = var_export($result, true);
         $variable = $this->args[0]->nodeValue;
         [$destFrame, $destVariable] = explode('@', $variable);
-        $this->memoryManager->setFrame($destFrame, $destVariable, $result, "bool");
+        $this->memoryManager->setVariableInFrame($destFrame, $destVariable, $result, "bool");
         
     }
     

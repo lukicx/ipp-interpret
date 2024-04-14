@@ -15,12 +15,12 @@ class Concat extends Opcode {
         [$secondValue, $secondType] = $this->getValueAndType->execute($this->args[2], $this->memoryManager);
 
         if ($firstType !== 'string' || $secondType !== 'string') {
-            throw new \Exception("Both operands must be strings", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Arguments should be type of string\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
 
         $value = $firstValue . $secondValue;
-        echo "Value concatenated: " . $value . "\n";
 
-        $this->memoryManager->setFrame($frame,  $variable, $value, 'string');
+        $this->memoryManager->setVariableInFrame($frame,  $variable, $value, 'string');
     }
 }

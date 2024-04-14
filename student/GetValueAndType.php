@@ -16,7 +16,7 @@ class GetValueAndType {
 
         if ($operandNode->getAttribute('type') === 'var') {
             [$frame, $variable] = explode('@', $operandNode->nodeValue);
-            $storedFrameData = $memoryManager->getFrame($frame, $variable);
+            $storedFrameData = $memoryManager->getVariableInFrame($frame, $variable);
             $value = $storedFrameData['value'];
             $type = $storedFrameData['type'];
         } else {

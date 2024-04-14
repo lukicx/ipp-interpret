@@ -13,7 +13,8 @@ class Setchar extends Opcode {
         [$secondValue, $secondType] = $this->getValueAndType->execute($this->args[2], $this->memoryManager);
 
         if ($firstType !== 'int' || $secondType !== 'string') {
-            throw new \Exception("Wrong operand types has to be int and string", ReturnCode::OPERAND_TYPE_ERROR);
+            $this->stderrWriter->writeString("Operands should be int and string\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);;
         }
 
         [$stringToChange, $stringType] = $this->getValueAndType->execute($this->args[0], $this->memoryManager);
@@ -25,11 +26,7 @@ class Setchar extends Opcode {
         $stringToChange = substr_replace($stringToChange, $secondValue[0], $firstValue, 1);
         
         [$frame, $variable] = explode('@', $variableToChange);
-        $this->memoryManager->setFrame($frame, $variable,  $stringToChange, 'string');
-        echo "Debug: \$frame after setFrame: $frame\n";
-        echo "Debug: \$variable after setFrame: $variable\n";
-        echo "Debug: \$stringToChange after setFrame: $stringToChange\n";
+        $this->memoryManager->setVariableInFrame($frame, $variable,  $stringToChange, 'string');
         
-        // Debugging information
     }
 }
