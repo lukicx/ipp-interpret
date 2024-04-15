@@ -8,7 +8,7 @@ use IPP\Core\StreamWriter;
 
 class MemoryManager {
     protected StreamWriter $stderrWriter;
-    protected int $numberOfInstructions;
+    protected int $order;
     protected int $positionInCode;
     protected GetValueAndType $getValueAndType;
 
@@ -33,6 +33,10 @@ class MemoryManager {
      * @var array{type:string,value:mixed}[]
      */
     private $dataStack = [];
+    /**
+     * @var int[]
+     */
+    private $callStack = [];
 
     /**
      * @var array<string,int>
@@ -98,6 +102,26 @@ class MemoryManager {
         $this->setVariableInFrame($frame, $varName, $value['value'], $value['type']);
     }
 
+    /**
+    * @param int $order
+    * @return void
+    */
+    public function pushCall(int $order): void {
+        array_push($this->callStack, $order);
+    }
+   
+    /**
+    * @return int
+    */
+    public function popCall() {
+        if ($this->callStack === []) {
+            $this->stderrWriter->writeString("Call stack is empty\n");
+            exit(ReturnCode::VALUE_ERROR);
+        }
+        return array_pop($this->callStack);
+    }
+
+
     public function getVariableInFrame(string $frame, string $var) : mixed {
         switch ($frame) {
             case 'GF':
@@ -112,12 +136,12 @@ class MemoryManager {
                     exit(ReturnCode::VARIABLE_ACCESS_ERROR);
                 }
                 return $this->LF[$var];
-                case 'TF':
-                    if (!isset($this->TF[$var])) {
-                    echo "hello";
-                    $this->stderrWriter->writeString("Variable '$var' not defined\n");
-                    exit(ReturnCode::VARIABLE_ACCESS_ERROR);
-                }
+            case 'TF':
+                if (!isset($this->TF[$var])) {
+                echo "hello";
+                $this->stderrWriter->writeString("Variable '$var' not defined\n");
+                exit(ReturnCode::VARIABLE_ACCESS_ERROR);
+            }
                 return $this->TF[$var];
             default:
                 $this->stderrWriter->writeString("Wrong frame\n");
@@ -173,7 +197,7 @@ class MemoryManager {
     public function getLabelOrder(string $label): int {
         if (!$this->doesLabelExist($label)) {
             $this->stderrWriter->writeString("Label '$label' does not exist\n");
-            exit(ReturnCode::VARIABLE_ACCESS_ERROR);
+            exit(ReturnCode::SEMANTIC_ERROR);
         }
         return $this->labels[$label];
     }
@@ -190,12 +214,12 @@ class MemoryManager {
         return $framesStatus;
     }
 
-    public function setNumberOfInstructions(int $number) : void {
-        $this->numberOfInstructions = $number;
+    public function setOrderOfInstruction(int $order) : void {
+        $this->order = $order;
     }
 
-    public function getNumberOfInstructions() : int {
-        return $this->numberOfInstructions;
+    public function getOrderOfInstruction() : int {
+        return $this->order;
     }
 
     public function setPositionInCode(int $position) : void {

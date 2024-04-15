@@ -11,7 +11,7 @@ class Label extends Opcode{
     }
 
     public function execute(): void {
-        $label = $this->args[0]->nodeValue;
+        $label = $this->args->nodeValue;
         $this->memoryManager->setLabel($label, $this->order);
     }
 }

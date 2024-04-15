@@ -14,7 +14,7 @@ class Defvar extends Opcode {
         // TODO: Implement other frames
 
         if ($this->memoryManager->doesVariableExistInFrame($frame, $variable)) {
-            $this->stderrWriter->writeString("Variable already exists in the frame\n");
+            $this->stderrWriter->writeString("Variable already exists in the frame $frame\n");
             exit(ReturnCode::SEMANTIC_ERROR);
         }
         $this->memoryManager->setVariableInFrame($frame, $variable, null, null);

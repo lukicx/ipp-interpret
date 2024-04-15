@@ -38,9 +38,27 @@ class Interpreter extends AbstractInterpreter
         }
         ksort($instructions);
 
-        $numberOfInstructions = 0;
-        foreach ($instructions as $instruction){
-            $numberOfInstructions++;
+        $memoryManager = MemoryManager::getInstance();
+
+
+        $numberOfInstructions = end($instructions)->getAttribute('order');
+        
+        foreach ($instructions as $order => $instruction) {
+            $opcode = $instruction->getAttribute('opcode');
+            if ($opcode === 'LABEL') {
+                $arg = $instruction->getElementsByTagName('arg1');
+                $label = new Label($arg[0], $memoryManager, $order);
+                $label->execute();
+            }
+        }
+
+        
+       for ($i = 1; $i <= $numberOfInstructions; $i++){
+        if (!isset($instructions[$i])) {
+            continue;
+        }
+        $instruction = $instructions[$i];
+
             $j = 1;
             $allArgs = [];
             while (true) {
@@ -60,9 +78,9 @@ class Interpreter extends AbstractInterpreter
             });
 
 
-            $memoryManager = MemoryManager::getInstance();
+            $order = (int)$instruction->getAttribute('order');
             $memoryManager->setPositionInCode($order);
-            $memoryManager->setNumberOfInstructions($numberOfInstructions);
+            $memoryManager->setOrderOfInstruction($order);
 
             $opcode = null;
 
@@ -131,12 +149,13 @@ class Interpreter extends AbstractInterpreter
                     $opcode = new Type($allArgs, $memoryManager);
                     break;
                 case 'LABEL':
-                    $opcode = new Label($allArgs, $memoryManager, $order);
                     break;
                 case 'JUMP':
                     $opcode = new Jump($allArgs, $memoryManager);
                     $opcode->execute();
+                    $i = $opcode->getOrder();
                     continue 2;
+                    // break;
                 case 'EXIT':
                     $opcode = new ExitOp($allArgs, $memoryManager);
                     break;
@@ -161,14 +180,36 @@ class Interpreter extends AbstractInterpreter
                 case 'PUSHS':
                     $memoryManager->pushs($allArgs);
                     break;
+                case 'JUMPIFEQ':
+                    $opcode = new JumpIfEq($allArgs, $memoryManager, $i);
+                    $opcode->execute();
+                    $i = $opcode->getOrder();
+                    // continue 2;
+                    continue 2;
+                case 'JUMPIFNEQ':
+                    $opcode = new JumpIfNeq($allArgs, $memoryManager, $i);
+                    $opcode->execute();
+                    $i = $opcode->getOrder();
+                    continue 2;
+                case 'CALL':
+                    $opcode = new Call($allArgs, $memoryManager, $i);
+                    $opcode->execute();
+                    $i = $opcode->getOrder();
+                    continue 2;
+                case 'RETURN':
+                    $opcode = new ReturnOp($allArgs, $memoryManager, $i);
+                    $opcode->execute();
+                    $i = $opcode->getOrder();
+                    continue 2;
                 default:
                     $this->stderr->writeString("Wrong XML structure");
                     exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
             }
-        
-            if ($opcode !== null && $opcode !== Jump::class) {
-                $opcode->execute();
+            if ($opcode === null){
+                continue;
             }
+            $opcode->execute();
+       
         }
        return ReturnCode::OK;
     }
