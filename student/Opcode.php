@@ -1,8 +1,13 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
 use IPP\Core\StreamWriter;
+
 
 abstract class  Opcode {
     protected mixed $args;
@@ -18,7 +23,6 @@ abstract class  Opcode {
         $this->stderrWriter = new StreamWriter(STDERR);
 
     }
-
     public function execute() : void {
     }
 }

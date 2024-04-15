@@ -1,89 +1,71 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
+
+
 
 namespace IPP\Student;
 
 use IPP\Core\AbstractInterpreter;
-use IPP\Core\FileInputReader;
 use IPP\Core\ReturnCode;
+use DOMDocument;
 
 class Interpreter extends AbstractInterpreter
 {
     public function execute(): int
     {
-        // TODO: Start your code here
-        // Check \IPP\Core\AbstractInterpreter for predefined I/O objects:
-        // $dom = $this->source->getDOMDocument();
-        // $val = $this->input->readString();
-        // $this->stdout->writeString("stdout");
-        // $this->stderr->writeString("stderr");
         
+        
+        /** @var DOMDocument$dom */
         $dom = $this->source->getDOMDocument();
-        // $val = $this->input->readString();
 
-        if ($dom->documentElement->getAttribute('language') !== 'IPPcode24') {
-            $this->stderr->writeString("Wrong document language");
-            exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
-        }
-
-        $unorderedInstructions = $dom->getElementsByTagName('instruction');
-        $instructions = []; 
-        
-        foreach ($unorderedInstructions as $instruction) {
-            $order = (int) $instruction->getAttribute('order');
-            if ($order < 0){
-                $this->stderr->writeString("Negative order");
-                exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
-            }
-            $instructions[$order] = $instruction;
-        }
-        ksort($instructions);
-
+        /**
+         * @param DOMDocument$dom
+         * @var InstructionHandler$instructionHandler
+         */
+        $instructionHandler = new InstructionHandler($dom, $this->stderr);
+        $getSortedInstructions = $instructionHandler->execute();
+        $numberOfInstructions = $getSortedInstructions['number'];
+        $instructions = $getSortedInstructions['instructions'];
         $memoryManager = MemoryManager::getInstance();
 
 
-        $numberOfInstructions = end($instructions)->getAttribute('order');
-        
-        foreach ($instructions as $order => $instruction) {
-            $opcode = $instruction->getAttribute('opcode');
-            if ($opcode === 'LABEL') {
-                $arg = $instruction->getElementsByTagName('arg1');
-                $label = new Label($arg[0], $memoryManager, $order);
-                $label->execute();
-            }
-        }
-
-        
+        // loops over each instruction starting from first valid count 1 to number of instructions
        for ($i = 1; $i <= $numberOfInstructions; $i++){
         if (!isset($instructions[$i])) {
             continue;
         }
+
         $instruction = $instructions[$i];
-
-            $j = 1;
-            $allArgs = [];
-            while (true) {
-                $args = $instruction->getElementsByTagName('arg' . $j);
-                if ($args->length == 0) {
-                    break;
-                }
-                foreach ($args as $arg) {
-                    $allArgs[] = $arg;
-                }
-                $j++;
+        $j = 1;
+        $allArgs = [];
+        // gets all arguments of instruction starting from one, numbers them by $j variable starting from 1 and incrementing by 1
+        while (true) {
+            $args = $instruction->getElementsByTagName('arg' . $j);
+            if ($args->length == 0) {
+                break;
             }
-
-             // Sort the arguments by their node name
+            foreach ($args as $arg) {
+                $allArgs[] = $arg;
+            }
+            $j++;
+        }
+            // sorts arguments by nodeName
             usort($allArgs, function($first, $second) {
                 return strcmp($first->nodeName, $second->nodeName);
             });
 
 
-            $order = (int)$instruction->getAttribute('order');
-            $memoryManager->setPositionInCode($order);
-            $memoryManager->setOrderOfInstruction($order);
+        $order = (int)$instruction->getAttribute('order');
+        $memoryManager->setPositionInCode($i);
+        $memoryManager->setOrderOfInstruction($order);
 
-            $opcode = null;
+        $opcode = null;
 
+
+        // Switch case, gets the current instruction opcode creates new instance of class opcode and executes it
             switch ($instruction->getAttribute('opcode')) {
                 case 'MOVE':
                     $opcode = new Move($allArgs, $memoryManager);
@@ -155,7 +137,6 @@ class Interpreter extends AbstractInterpreter
                     $opcode->execute();
                     $i = $opcode->getOrder();
                     continue 2;
-                    // break;
                 case 'EXIT':
                     $opcode = new ExitOp($allArgs, $memoryManager);
                     break;
@@ -184,7 +165,6 @@ class Interpreter extends AbstractInterpreter
                     $opcode = new JumpIfEq($allArgs, $memoryManager, $i);
                     $opcode->execute();
                     $i = $opcode->getOrder();
-                    // continue 2;
                     continue 2;
                 case 'JUMPIFNEQ':
                     $opcode = new JumpIfNeq($allArgs, $memoryManager, $i);
@@ -201,6 +181,7 @@ class Interpreter extends AbstractInterpreter
                     $opcode->execute();
                     $i = $opcode->getOrder();
                     continue 2;
+                // if opcode is not valid, the XML structure is wrong, exit with error
                 default:
                     $this->stderr->writeString("Wrong XML structure");
                     exit(ReturnCode::INVALID_SOURCE_STRUCTURE);

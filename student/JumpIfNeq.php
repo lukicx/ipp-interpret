@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -19,16 +23,18 @@ class JumpIfNeq extends Opcode {
         $label = $this->args[0]->nodeValue;
         [$firstOperand, $firstType] = $this->getValueAndType->execute($this->args[1], $this->memoryManager);
         [$secondOperand, $secondType] = $this->getValueAndType->execute($this->args[2], $this->memoryManager);
-    
-        if ($firstType != $secondType && $firstOperand != "nil" && $secondOperand != "nil") {
+        
+        // if operands are of the same type or one of them is nil, evaluate the not equal, if it is true jump
+        if ($firstType == $secondType || $firstOperand == "nil" || $secondOperand == "nil") {
+            if ($firstOperand != $secondOperand) {
+                $this->order = $this->memoryManager->getLabelOrder($label);
+            }
+        }
+        else {
             $this->stderrWriter->writeString("Operands are not of the same type\n");
             exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
-    
-        if ($firstOperand != $secondOperand) {
-            $this->order = $this->memoryManager->getLabelOrder($label);
-        }
-       
+
     }
 
     public function getOrder(): int {

@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 namespace IPP\Student;
 
 use DOMElement;
@@ -15,6 +19,7 @@ abstract class Relational extends Opcode {
     protected function getOperands(DOMElement $firstOperandElement, DOMElement $secondOperandElement) : array  {
         [$firstOperand, $firstType]= $this->getValueAndType->execute($firstOperandElement, $this->memoryManager);
         [$secondOperand, $secondType]= $this->getValueAndType->execute($secondOperandElement, $this->memoryManager);
+
 
         if ($firstType === 'nil' || $secondType === 'nil'){
             if (!($this instanceof Eq)) {
@@ -45,6 +50,7 @@ abstract class Relational extends Opcode {
 
     public function execute(): void
     {
+        // Get the operands from class method, do the operation with values casted to appropriate type, then cast the result back to string
         [$firstOperand, $secondOperand] = $this->getOperands($this->args[1], $this->args[2]);
         $result = $this->operation($firstOperand, $secondOperand);
         $result = var_export($result, true);

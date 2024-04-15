@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -22,11 +26,11 @@ class MemoryManager {
      */
     private ?array $LF = null;
     /**
-     * @var array<string,array{type:string,value:mixed}>|null
+     * @var array<mixed>
      */
     private ?array $TF = null;
     /**
-     * @var array<array<string,array{type:string,value:mixed}>>|null
+     * @var array<mixed>
      */
     private $stack = [];
     /**
@@ -54,11 +58,11 @@ class MemoryManager {
         }
         return self::$singleInstance;
     }
-
+    // Create a new temporary frame
     public function createFrame(): void {
         $this->TF = [];
     }
-
+    // Push the temporary frame to the stack and set it as the local frame
     public function pushFrame(): void {
         if ($this->TF === null) {
             $this->stderrWriter->writeString("Frame not defined\n");
@@ -68,7 +72,7 @@ class MemoryManager {
         $this->LF = $this->TF;
         $this->TF = null; 
     }
-
+    // Pop the local frame from the stack
     public function popFrame(): void {
         if ($this->LF === null) {
             $this->stderrWriter->writeString("Frame not defined\n");
@@ -97,13 +101,17 @@ class MemoryManager {
             $this->stderrWriter->writeString("Empty data stack\n");
             exit(ReturnCode::VALUE_ERROR);
         }
-        [$frame, $varName] = explode('@', $args[0]->nodeValue);
+        $nodeValue =  $args[0]->nodeValue;
+        if ($nodeValue === null){
+            $nodeValue = "";
+        }
+        [$frame, $varName] = explode('@', $nodeValue);
         $value = array_pop($this->dataStack);
         $this->setVariableInFrame($frame, $varName, $value['value'], $value['type']);
     }
 
     /**
-    * @param int $order
+    * @param int$order
     * @return void
     */
     public function pushCall(int $order): void {
@@ -121,26 +129,25 @@ class MemoryManager {
         return array_pop($this->callStack);
     }
 
-
+    // Get value by variable in respective frame
     public function getVariableInFrame(string $frame, string $var) : mixed {
         switch ($frame) {
             case 'GF':
                 if (!isset($this->GF[$var])) {
                     $this->stderrWriter->writeString("Variable '$var' not defined\n");
-                    exit(ReturnCode::VARIABLE_ACCESS_ERROR);
+                    exit(ReturnCode::FRAME_ACCESS_ERROR);
                 }
                 return $this->GF[$var];
             case 'LF':
                 if (!isset($this->LF[$var])) {
                     $this->stderrWriter->writeString("Variable '$var' not defined\n");
-                    exit(ReturnCode::VARIABLE_ACCESS_ERROR);
+                    exit(ReturnCode::FRAME_ACCESS_ERROR);
                 }
                 return $this->LF[$var];
             case 'TF':
                 if (!isset($this->TF[$var])) {
-                echo "hello";
                 $this->stderrWriter->writeString("Variable '$var' not defined\n");
-                exit(ReturnCode::VARIABLE_ACCESS_ERROR);
+                exit(ReturnCode::FRAME_ACCESS_ERROR);
             }
                 return $this->TF[$var];
             default:
@@ -148,7 +155,7 @@ class MemoryManager {
                 exit(ReturnCode::FRAME_ACCESS_ERROR);
             }
     }
-
+    // Set value by variable in respective frame
     public function setVariableInFrame(string $frame, string $var, mixed $value, mixed $type):void {
         switch ($frame) {
             case 'GF':
@@ -162,7 +169,7 @@ class MemoryManager {
                 break;
             default:
                 $this->stderrWriter->writeString("Wrong frame\n");
-                exit(ReturnCode::FRAME_ACCESS_ERROR);
+                exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
         }
     }                
     
@@ -185,7 +192,7 @@ class MemoryManager {
     public function doesLabelExist(string $label): bool {
         return isset($this->labels[$label]);
     }
-
+    // Set label with order
     public function setLabel(string $label, int $order): void {
         if ($this->doesLabelExist($label)) {
             $this->stderrWriter->writeString("Label '$label' does already exist\n");
@@ -193,7 +200,7 @@ class MemoryManager {
         }
         $this->labels[$label] = $order;
     }
-
+    // Get order of label
     public function getLabelOrder(string $label): int {
         if (!$this->doesLabelExist($label)) {
             $this->stderrWriter->writeString("Label '$label' does not exist\n");

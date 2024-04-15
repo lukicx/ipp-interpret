@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -14,7 +18,7 @@ class Getchar extends Opcode {
             $this->stderrWriter->writeString("Operands should be string and int\n");
             exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
-
+        // check if the index is in range
         if ($secondValue < 0 || $secondValue >= strlen($firstValue)) {
             $this->stderrWriter->writeString("Out of range\n");
             exit(ReturnCode::STRING_OPERATION_ERROR);

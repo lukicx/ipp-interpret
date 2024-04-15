@@ -1,4 +1,9 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
+
 
 namespace IPP\Student;
 
@@ -14,6 +19,7 @@ class Concat extends Opcode {
         [$firstValue, $firstType] = $this->getValueAndType->execute($this->args[1], $this->memoryManager);
         [$secondValue, $secondType] = $this->getValueAndType->execute($this->args[2], $this->memoryManager);
 
+        // concat expects both operands to be string
         if ($firstType !== 'string' || $secondType !== 'string') {
             $this->stderrWriter->writeString("Arguments should be type of string\n");
             exit(ReturnCode::OPERAND_TYPE_ERROR);

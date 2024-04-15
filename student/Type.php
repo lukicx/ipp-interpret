@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -12,7 +16,7 @@ public function execute(): void {
     if ($type === null) {
         $type = '';
     }
-
+    // store the value in the the appropriate frame to variable 
     [$frame, $variable] = explode('@', $setVariable);
     $this->memoryManager->setVariableInFrame($frame, $variable, $type, 'string');
 }

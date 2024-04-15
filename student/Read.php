@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -18,7 +22,7 @@ class Read extends Opcode {
 
         $variableToStore = $this->args[0]->nodeValue;
         $typeToRead = $this->args[1]->nodeValue;
-
+        // Check if the type to read is valid
         if ($typeToRead != "int" && $typeToRead != "string" && $typeToRead != "bool"){
             $this->stderrWriter->writeString("Wrong XML structure\n");
             exit(ReturnCode::INVALID_SOURCE_STRUCTURE);
@@ -26,7 +30,7 @@ class Read extends Opcode {
 
 
         [$frame, $variable] = explode('@', $variableToStore);
-
+        // Check if the variable exists in the frame, if it does program exits with semantic error
         $value = null;
         switch ($typeToRead) {
         case 'int':
@@ -49,30 +53,33 @@ class Read extends Opcode {
            $value = "nil";
            $typeToRead = "nil";
         }
-
-        // if($typeToRead === "int"){
-        //     if(!is_numeric($value)){
-        //         $this->stderrWriter->writeString("Invalid value type for read instruction\n");
-        //         exit(ReturnCode::SEMANTIC_ERROR);
-        //     }
-        // }
-        // else if($typeToRead === "bool"){
-        //     if($value !== "true" && $value !== "false"){
-        //         $this->stderrWriter->writeString("Invalid value type for read instruction\n");
-        //         exit(ReturnCode::SEMANTIC_ERROR);
-        //     }
-        // }
-        // else if ($typeToRead === "string"){
-        //     if(!is_string($value)){
-        //         $this->stderrWriter->writeString("Invalid value type for read instruction\n");
-        //         exit(ReturnCode::SEMANTIC_ERROR);
-        //     }
-        // }
-        // else{
-        //     $this->stderrWriter->writeString("Invalid value type for read instruction\n");
-        //     exit(ReturnCode::OPERAND_TYPE_ERROR);
-        // }
-
+        // Check if the type to read matches the read value
+        if($typeToRead === "int"){
+            if(!is_numeric($value)){
+                $this->stderrWriter->writeString("Invalid value type for read instruction\n");
+                exit(ReturnCode::SEMANTIC_ERROR);
+            }
+        }
+        else if($typeToRead === "bool"){
+            $value = $value ? 'true' : 'false';
+        }
+        else if ($typeToRead === "string"){
+            if(!is_string($value)){
+                $this->stderrWriter->writeString("Invalid value type for read instruction\n");
+                exit(ReturnCode::SEMANTIC_ERROR);
+            }
+        }
+        else if($typeToRead === "nil"){
+            if($value !== "nil"){
+                $this->stderrWriter->writeString("Invalid value type for read instruction\n");
+                exit(ReturnCode::SEMANTIC_ERROR);
+            }
+        }
+        else{
+            $this->stderrWriter->writeString("Invalid value type for read instruction\n");
+            exit(ReturnCode::OPERAND_TYPE_ERROR);
+        }
+        // Store the value to the variable name in frame, with type and value
         $this->memoryManager->setVariableInFrame($frame, $variable, $value, $typeToRead);
     }
 }

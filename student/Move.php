@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -20,7 +24,7 @@ class Move extends Opcode{
         } else {
             $value = $source;
         }
-
+        // check if the variable exists in the frame 
         if (!$this->memoryManager->doesVariableExistInFrame($destinationFrame, $destinationVariable)) {
             $this->stderrWriter->writeString("Variable does not exist in the frame\n");
             exit(ReturnCode::VARIABLE_ACCESS_ERROR);

@@ -1,4 +1,8 @@
 <?php
+ /**
+* IPP - PHP Project Student
+ * @author Lukas Selicky xselic00
+ */
 
 namespace IPP\Student;
 
@@ -11,6 +15,9 @@ class Write extends Opcode {
         $stdOutWriter = new StreamWriter(STDOUT);
         $valueToWrite = $this->args[0]->nodeValue;
 
+        /* check the type of the instruction if it is var get the type and value from stored associative array, 
+        * else get the type from DOMelement attribute type, and value from nodeValue.
+        */
         if ($this->args[0]->getAttribute('type') === 'var'){
             [$frame, $variable] = explode('@', $valueToWrite);
             $value = $this->memoryManager->getVariableInFrame($frame, $variable);
@@ -21,18 +28,17 @@ class Write extends Opcode {
             $reTypeBoolValue = false;
             $reTypeIntValue = 0;
 
-   
-
+            // recast the string value to bool or int if needed
             if ($type === 'bool'){
                 $reTypeBoolValue = filter_var($value, FILTER_VALIDATE_BOOLEAN);
             }
             if($type === 'int'){
                 $reTypeIntValue = filter_var($value, FILTER_VALIDATE_INT);
+                if ($reTypeIntValue === false) {
+                    $reTypeIntValue = 0;
+                }
             }
-
-         
-
-
+            
             if ($type === 'int') {
                 $stdOutWriter->writeInt($reTypeIntValue);
             } else if ($type === 'bool') {
@@ -59,11 +65,15 @@ class Write extends Opcode {
             $reTypeBoolValue = false;
             $reTypeIntValue = 0;
 
+            // recast the string value to bool or int if needed
             if ($constantType === 'bool'){
                 $reTypeBoolValue = filter_var($constantValue, FILTER_VALIDATE_BOOLEAN);
             }
             if($constantType === 'int'){
                 $reTypeIntValue = filter_var($constantValue, FILTER_VALIDATE_INT);
+                if ($reTypeIntValue === false) {
+                    $reTypeIntValue = 0;
+                }
             }
             switch ($constantType) {
                 case 'int':
@@ -82,20 +92,22 @@ class Write extends Opcode {
                 default:
                     $this->stderrWriter->writeString("Unknown type const writer\n");
                     exit(ReturnCode::SEMANTIC_ERROR);
-                    // $constantValue = $this->handleEscapeSeq($constantValue);
-                    // $stdOutWriter->writeString($constantValue);
             }
         }
-        // echo "\nWrote value: " . $value . "\n";
     }
 
+     /* This method processes a string and replaces escape sequences with their corresponding characters.
+     * Correct escape sequence is backslash and three numeric characters.
+     * If the escape sequence is valid, it is replaced with the corresponding character.
+     * If the escape sequence is not valid, return the original string.
+     */
     public function handleEscapeSeq(string $string) : string{
         $resultString = '';
         for ($i = 0; $i < strlen($string); $i++) {
             if ($string[$i] === '\\') {
-                $ascii = substr($string, $i + 1, 3);
-                if (is_numeric($ascii) && strlen($ascii) === 3) {
-                    $resultString .= chr((int)$ascii);
+                $nextThreeChars = substr($string, $i + 1, 3);
+                if (is_numeric($nextThreeChars) && strlen($nextThreeChars) === 3) {
+                    $resultString .= chr((int)$nextThreeChars);
                     $i += 3;
                 } else {
                     $resultString .= $string[$i];
