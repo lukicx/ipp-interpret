@@ -6,11 +6,14 @@
 
 namespace IPP\Student;
 
+
 use DOMElement;
 use IPP\Core\ReturnCode;
 use IPP\Core\StreamWriter;
 
 class MemoryManager {
+
+
     protected StreamWriter $stderrWriter;
     protected int $order;
     protected int $positionInCode;
@@ -56,7 +59,7 @@ class MemoryManager {
         if (self::$singleInstance === null) {
             self::$singleInstance = new MemoryManager();
         }
-        return self::$singleInstance;
+        return self::$singleInstance; 
     }
     // Create a new temporary frame
     public function createFrame(): void {

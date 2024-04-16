@@ -6,10 +6,13 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 use IPP\Core\StreamWriter;
 
 class Write extends Opcode {
+
+
 
     public function execute(): void {
         $stdOutWriter = new StreamWriter(STDOUT);

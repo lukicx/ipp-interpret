@@ -6,7 +6,10 @@
 
 namespace IPP\Student;
 
+
 class PushFrame {
+
+
     private MemoryManager $memoryManager;
 
     public function __construct(MemoryManager $memoryManager) {

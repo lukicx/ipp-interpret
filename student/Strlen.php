@@ -6,9 +6,12 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Strlen extends Opcode {
+
+
 
     public function execute(): void {
         [$value, $type] = $this->getValueAndType->execute($this->args[1], $this->memoryManager);

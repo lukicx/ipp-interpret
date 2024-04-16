@@ -6,9 +6,12 @@
 
 namespace IPP\Student;
 
+
 use DOMElement;
 
 class GetValueAndType {    
+
+
     /**
      *  Expects DOMElement node from DOM document, if the node is variable calls getVariableInFrame to get the value and type from it,
      *  otherwise extracts its value and type from the DOMElement value, after getting the type and value returns it

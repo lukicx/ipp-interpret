@@ -6,7 +6,10 @@
 
 namespace IPP\Student;
 
+
 class Jump extends Opcode {
+
+
     private int $order;
 
     public function execute(): void {

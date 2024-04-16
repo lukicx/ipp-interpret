@@ -7,9 +7,11 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Concat extends Opcode {
+    
 
     public function execute(): void {
         $variableToStore = $this->args[0]->nodeValue;

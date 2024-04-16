@@ -6,9 +6,11 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Defvar extends Opcode {
+    
 
     public function execute() : void {
 

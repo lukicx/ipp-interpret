@@ -6,9 +6,11 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Setchar extends Opcode {
+    
 
     public function execute(): void {
         // get value and type of the variable 

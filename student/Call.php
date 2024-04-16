@@ -7,7 +7,9 @@
 
 namespace IPP\Student;
 
+
 class Call extends Opcode {
+    
     private int $order;
 
     function __construct(mixed $args, MemoryManager $memoryManager, int $order)

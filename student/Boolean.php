@@ -6,14 +6,16 @@
 
 namespace IPP\Student;
 
+
 use DOMElement;
 use IPP\Core\ReturnCode;
 
 
 /**
- * Abstract class used to do boolean operations AND/OR/NOT 
+ * Abstract class used to do Boolean operations AND/OR/NOT 
  */
 abstract class Boolean extends Opcode {
+    
     
     /**
      * getOperands
@@ -32,7 +34,7 @@ abstract class Boolean extends Opcode {
                 $this->stderrWriter->writeString("Arguments should be type of bool\n");
                 exit(ReturnCode::OPERAND_TYPE_ERROR);
             }
-            // recast each operand to boolean
+            // recast each operand to Boolean
             $firstOperand = filter_var($firstOperand, FILTER_VALIDATE_BOOLEAN);
             $secondOperand = filter_var($secondOperand, FILTER_VALIDATE_BOOLEAN);
             return [$firstOperand, $secondOperand];
@@ -42,7 +44,7 @@ abstract class Boolean extends Opcode {
             $this->stderrWriter->writeString("Argument should be type of bool\n");
             exit(ReturnCode::OPERAND_TYPE_ERROR);
         }
-        // recast operand to boolean
+        // recast operand to Boolean
         $firstOperand = filter_var($firstOperand, FILTER_VALIDATE_BOOLEAN);
         return [$firstOperand];
     }

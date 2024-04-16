@@ -6,9 +6,12 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Read extends Opcode {
+
+
     private mixed $input;
 
     public function __construct(mixed $args, MemoryManager $memoryManager, mixed $input) {

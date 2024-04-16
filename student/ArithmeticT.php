@@ -7,16 +7,15 @@
 
 namespace IPP\Student;
 
+
 use DOMElement;
 use IPP\Core\ReturnCode;
 
-
-
-
 /**
- * Abstract class that is used to perform arithmetic operations on two operands of type int
+ * Abstract class that is used to perform ArithmeticT operations on two operands of type int
  */
-abstract class Arithmetic extends Opcode {
+abstract class ArithmeticT extends Opcode {
+    
 
     /**
      *

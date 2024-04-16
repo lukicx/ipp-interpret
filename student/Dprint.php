@@ -6,9 +6,11 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Dprint extends Opcode{
+    
 
 public function execute() : void {
     [$value, $type] = $this->getValueAndType->execute($this->args[0], $this->memoryManager);

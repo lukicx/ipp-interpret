@@ -6,7 +6,10 @@
 
 namespace IPP\Student;
 
+
 class Type extends Opcode {
+
+
 
 public function execute(): void {
     $setVariable = $this->args[0]->nodeValue;

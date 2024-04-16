@@ -6,10 +6,13 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\StreamWriter;
 
 
 abstract class  Opcode {
+    
+
     protected mixed $args;
     protected MemoryManager $memoryManager;
     protected GetValueAndType $getValueAndType;

@@ -6,10 +6,13 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 
 class JumpIfEq extends Opcode {
+
+
     private int $order;
 
     /**

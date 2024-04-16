@@ -9,6 +9,8 @@ namespace IPP\Student;
 use IPP\Core\ReturnCode;
 
 class ExitOp extends Opcode {
+
+
     public function execute() : void{
         [$value, $type] = $this->getValueAndType->execute($this->args[0], $this->memoryManager);
         if ($type !== 'int') {

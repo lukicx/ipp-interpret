@@ -7,7 +7,9 @@
 
 namespace IPP\Student;
 
+
 class BreakOp extends Opcode {
+    
     public function execute() : void {
         $positionInCode = $this->memoryManager->getPositionInCode();
         $frames = $this->memoryManager->getFramesStatus();

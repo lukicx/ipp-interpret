@@ -6,10 +6,11 @@
 
 namespace IPP\Student;
 
-use IPP\Student\Arithmetic;
 
 
-class Mul extends Arithmetic {
+class Mul extends ArithmeticT {
+
+
     public function operation(int $firstOperand, int $secondOperand): int {
         return $firstOperand * $secondOperand;
     } 

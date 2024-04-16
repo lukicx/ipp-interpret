@@ -6,7 +6,10 @@
 
 namespace IPP\Student;
 
+
 class Label extends Opcode{
+
+
     public int $order;
 
     public function __construct(mixed $args, MemoryManager $memoryManager, int $order) {

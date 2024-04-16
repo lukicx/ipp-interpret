@@ -7,11 +7,13 @@
 namespace IPP\Student;
 
 
-use IPP\Student\Arithmetic;
+
 use IPP\Core\ReturnCode;
 
 
-class Idiv extends Arithmetic {
+class Idiv extends ArithmeticT {
+    
+
     public function operation(int $firstOperand, int $secondOperand): int {
         if ($secondOperand === 0) {
             $this->stderrWriter->writeString("Can not divide by zero\n");

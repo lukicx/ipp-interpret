@@ -8,12 +8,14 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\AbstractInterpreter;
 use IPP\Core\ReturnCode;
 use DOMDocument;
 
 class Interpreter extends AbstractInterpreter
 {
+    
     public function execute(): int
     {
         
@@ -23,17 +25,17 @@ class Interpreter extends AbstractInterpreter
 
         /**
          * @param DOMDocument$dom
-         * @var InstructionHandler$instructionHandler
+         * @var SortInstructionsAndGetLabels$SortInstructionsAndGetLabels
          */
-        $instructionHandler = new InstructionHandler($dom, $this->stderr);
-        $getSortedInstructions = $instructionHandler->execute();
-        $numberOfInstructions = $getSortedInstructions['number'];
+        $SortInstructionsAndGetLabels = new SortInstructionsAndGetLabels($dom, $this->stderr);
+        $getSortedInstructions = $SortInstructionsAndGetLabels->execute();
+        $highestInstructionOrder = (int)$getSortedInstructions['number'];
         $instructions = $getSortedInstructions['instructions'];
         $memoryManager = MemoryManager::getInstance();
 
 
-        // loops over each instruction starting from first valid count 1 to number of instructions
-       for ($i = 1; $i <= $numberOfInstructions; $i++){
+        // loops over each instruction starting from first valid count 1 to highest instruction order
+       for ($i = 1; $i <= $highestInstructionOrder; $i++){
         if (!isset($instructions[$i])) {
             continue;
         }

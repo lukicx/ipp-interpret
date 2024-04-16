@@ -6,10 +6,11 @@
 
 namespace IPP\Student;
 
-use IPP\Student\Arithmetic;
 
 
-class Sub extends Arithmetic {
+class Sub extends ArithmeticT {
+
+
     public function operation(int $firstOperand, int $secondOperand): int {
         return $firstOperand - $secondOperand;
     } 

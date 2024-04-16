@@ -6,9 +6,12 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 
 class Getchar extends Opcode {
+
+
 
     public function execute(): void {
         [$firstValue, $firstType] = $this->getValueAndType->execute($this->args[1], $this->memoryManager);

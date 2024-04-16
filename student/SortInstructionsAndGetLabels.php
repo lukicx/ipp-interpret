@@ -6,13 +6,15 @@
 
 namespace IPP\Student;
 
+
 use IPP\Core\ReturnCode;
 use DOMelement;
 use DOMDocument;
 use IPP\Core\Interface\OutputWriter;
 
 
-class InstructionHandler {
+class SortInstructionsAndGetLabels {
+
         /**
          * @var array<DOMelement>$instructions
          */
@@ -63,8 +65,8 @@ class InstructionHandler {
                 }
             }
 
-            $numberOfInstructions = (int)end($this->instructions)->getAttribute('order');
+            $highestInstructionOrder = (int)(end($this->instructions)->getAttribute('order'));
 
-            return ['number' => $numberOfInstructions, 'instructions' => $this->instructions];
+            return ['number' => $highestInstructionOrder, 'instructions' => $this->instructions];
         }
 }

@@ -6,7 +6,10 @@
 
 namespace IPP\Student;
 
+
 class ReturnOp extends Opcode {
+
+
     private int $order;
 
     function __construct(mixed $args, MemoryManager $memoryManager, int $order)
